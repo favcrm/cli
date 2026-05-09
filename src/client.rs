@@ -41,12 +41,25 @@ impl McpClient {
     }
 
     pub async fn call_tool(&self, name: &str, args: Value) -> Result<Value> {
+        self.rpc("tools/call", json!({ "name": name, "arguments": args }))
+            .await
+            .and_then(extract_data)
+    }
+
+    /// Fetch the full MCP tool catalog. Returns the raw `tools` array — each
+    /// entry has at least `{name, description, inputSchema}`.
+    pub async fn list_tools(&self) -> Result<Value> {
+        let result = self.rpc("tools/list", json!({})).await?;
+        Ok(result.get("tools").cloned().unwrap_or(Value::Array(vec![])))
+    }
+
+    async fn rpc(&self, method: &str, params: Value) -> Result<Value> {
         let id = self.id.fetch_add(1, Ordering::Relaxed);
         let body = json!({
             "jsonrpc": "2.0",
             "id": id,
-            "method": "tools/call",
-            "params": { "name": name, "arguments": args },
+            "method": method,
+            "params": params,
         });
 
         let res = self
@@ -72,8 +85,7 @@ impl McpClient {
         if let Some(err) = envelope.error {
             return Err(anyhow!("MCP error {}: {}", err.code, err.message));
         }
-        let result = envelope.result.ok_or_else(|| anyhow!("MCP response missing result"))?;
-        extract_data(result)
+        envelope.result.ok_or_else(|| anyhow!("MCP response missing result"))
     }
 }
 

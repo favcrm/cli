@@ -35,7 +35,9 @@ pub enum Command {
     /// Invoices.
     #[command(subcommand)]
     Invoices(invoices::InvoicesCmd),
-    /// Escape hatch: call any registered MCP tool by name with raw JSON args.
+    /// Universal verb for any registered MCP tool. Subcommands:
+    /// `list` (catalog), `describe <name>` (input schema), `call <name> [json]`,
+    /// or shortcut `<name> [json]`.
     Tool(tool::Args),
 }
 
