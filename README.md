@@ -65,6 +65,8 @@ favcrm tool generate_image '{"prompt":"sunset","model":"gemini-2.5-flash-image"}
 
 See the full catalog at `https://api.favcrm.io/mcp` (JSON-RPC `tools/list`).
 
+Public agent workflow skills for using this CLI live in [`favcrm/mcp/skills`](https://github.com/favcrm/mcp/tree/main/skills). The CLI stays the execution layer; the MCP repo is the public skill catalog.
+
 ## Output
 
 Default: human-friendly tables. Use `--json` for machine-parseable JSON (pipes well into `jq`).
