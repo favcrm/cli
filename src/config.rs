@@ -1,9 +1,19 @@
-//! Resolve API key + URL: CLI flag > env > `~/.config/favcrm/config.toml`.
+//! Resolve API key + URL.
+//!
+//! Priority order:
+//!   key: --api-key > FAVCRM_API_KEY > FAVCRM_MCP_TOKEN > config file
+//!   url: --url    > FAVCRM_MCP_URL > FAVCRM_API_BASE+'/mcp' > config file > prod default
+//!
+//! The merchant runtime image (favcrm-openclaw-runtime) sets FAVCRM_MCP_TOKEN
+//! and FAVCRM_API_BASE on the machine. Reading them directly here means the
+//! bundled CLI works inside any FavCRM container with no extra wiring.
 
 use anyhow::{anyhow, Context, Result};
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
-use std::{fs, path::PathBuf};
+use std::{env, fs, path::PathBuf};
+
+pub const DEFAULT_URL: &str = "https://api.favcrm.io/mcp";
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 struct FileCfg {
@@ -44,15 +54,24 @@ pub fn save(api_key: &str, url: &str) -> Result<PathBuf> {
 
 pub fn resolve(cli_key: &Option<String>, cli_url: &str) -> Result<Resolved> {
     let file = load_file().unwrap_or_default();
+
     let api_key = cli_key
         .clone()
+        .or_else(|| env::var("FAVCRM_MCP_TOKEN").ok())
         .or(file.api_key)
-        .ok_or_else(|| anyhow!("no API key. Set FAVCRM_API_KEY env or run `favcrm login <KEY>`"))?;
-    let url = if cli_url == "https://api.favcrm.io/mcp" {
-        // Default not overridden on CLI — let file value win if present.
-        file.url.unwrap_or_else(|| cli_url.to_string())
-    } else {
+        .ok_or_else(|| anyhow!("no API key. Set FAVCRM_API_KEY (or FAVCRM_MCP_TOKEN inside a runtime) or run `favcrm login <KEY>`"))?;
+
+    // CLI flag wins outright. Otherwise fall back to merchant-runtime envs,
+    // saved config, then the prod default.
+    let url = if cli_url != DEFAULT_URL {
         cli_url.to_string()
+    } else if let Ok(u) = env::var("FAVCRM_MCP_URL") {
+        u
+    } else if let Ok(base) = env::var("FAVCRM_API_BASE") {
+        format!("{}/mcp", base.trim_end_matches('/'))
+    } else {
+        file.url.unwrap_or_else(|| DEFAULT_URL.to_string())
     };
+
     Ok(Resolved { api_key, url })
 }

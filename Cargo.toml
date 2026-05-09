@@ -1,6 +1,6 @@
 [package]
 name = "favcrm"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 rust-version = "1.75"
 description = "FavCRM CLI — talk to FavCRM from your terminal via the MCP API."
