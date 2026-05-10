@@ -1,0 +1,16 @@
+# Default owners for all changes.
+* @favcrm/maintainers
+
+# Public contribution and release surface.
+/.github/ @favcrm/maintainers
+/README.md @favcrm/maintainers
+/Cargo.toml @favcrm/maintainers
+/Cargo.lock @favcrm/maintainers
+
+# Auth, config, MCP transport, and output compatibility need maintainer review.
+/src/client.rs @favcrm/maintainers
+/src/config.rs @favcrm/maintainers
+/src/metadata.rs @favcrm/maintainers
+/src/output.rs @favcrm/maintainers
+/src/commands/ @favcrm/maintainers
+

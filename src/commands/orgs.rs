@@ -20,8 +20,14 @@ pub async fn run(client: &McpClient, cmd: OrgsCmd, json: bool) -> Result<()> {
     let value: Value = match cmd {
         OrgsCmd::List => client.call_tool("list_my_companies", json!({})).await?,
         OrgsCmd::Switch { company_id } => {
-            client.call_tool("switch_company", json!({ "companyId": company_id })).await?
+            client
+                .call_tool("switch_company", json!({ "companyId": company_id }))
+                .await?
         }
     };
-    if json { print_json(&value) } else { print_table(&value) }
+    if json {
+        print_json(&value)
+    } else {
+        print_table(&value)
+    }
 }

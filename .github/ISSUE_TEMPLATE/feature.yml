@@ -1,0 +1,45 @@
+name: Feature request
+description: Request a new command, option, output format, install path, or release target.
+title: "[feature] "
+labels: ["enhancement", "needs triage"]
+body:
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues first.
+          required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - New command
+        - New command option
+        - JSON output
+        - Human-readable output
+        - Install or packaging
+        - Release target
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: use_case
+    attributes:
+      label: What workflow is blocked?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed CLI shape
+      description: Show the command or output you would expect, if you have one.
+      render: shell
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Current workaround
+      description: Include `favcrm tool ...` calls if relevant.
+

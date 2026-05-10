@@ -14,8 +14,8 @@
 //! consumer reads a fresh credential on demand from a local trusted source
 //! rather than caching long-lived secrets to disk.
 
-use std::{env, time::Duration};
 use serde::Deserialize;
+use std::{env, time::Duration};
 
 const DEFAULT_PORT: &str = "3002";
 const PROBE_TIMEOUT: Duration = Duration::from_millis(800);
@@ -30,7 +30,8 @@ pub async fn populate_env() {
     if env::var("FAVCRM_API_KEY").is_ok() {
         return;
     }
-    let port = env::var("FAVCRM_SIDECAR_INTERNAL_PORT").unwrap_or_else(|_| DEFAULT_PORT.to_string());
+    let port =
+        env::var("FAVCRM_SIDECAR_INTERNAL_PORT").unwrap_or_else(|_| DEFAULT_PORT.to_string());
     let url = format!("http://127.0.0.1:{}/v1/cli-token", port);
 
     let client = match reqwest::Client::builder().timeout(PROBE_TIMEOUT).build() {

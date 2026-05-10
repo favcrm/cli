@@ -1,0 +1,75 @@
+name: Bug report
+description: Report a CLI crash, incorrect command behavior, auth problem, or output issue.
+title: "[bug] "
+labels: ["bug", "needs triage"]
+body:
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues first.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Install or upgrade
+        - Authentication
+        - Command behavior
+        - JSON output
+        - Human-readable output
+        - MCP tool escape hatch
+        - Release artifact
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: CLI version
+      placeholder: favcrm 0.1.3
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: macOS 14 arm64, Ubuntu 24.04 x86_64, Windows 11
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: Paste the command. Redact API keys and customer data.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: input
+    id: timestamp
+    attributes:
+      label: Approximate timestamp
+      description: Use UTC if the command reached the FavCRM API.
+      placeholder: "2026-05-10 14:32 UTC"
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+

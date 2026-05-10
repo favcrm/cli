@@ -37,8 +37,7 @@ fn load_file() -> Result<FileCfg> {
     if !path.exists() {
         return Ok(FileCfg::default());
     }
-    let body = fs::read_to_string(&path)
-        .with_context(|| format!("read {}", path.display()))?;
+    let body = fs::read_to_string(&path).with_context(|| format!("read {}", path.display()))?;
     toml::from_str(&body).with_context(|| format!("parse {}", path.display()))
 }
 
@@ -47,7 +46,10 @@ pub fn save(api_key: &str, url: &str) -> Result<PathBuf> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
     }
-    let cfg = FileCfg { api_key: Some(api_key.to_string()), url: Some(url.to_string()) };
+    let cfg = FileCfg {
+        api_key: Some(api_key.to_string()),
+        url: Some(url.to_string()),
+    };
     fs::write(&path, toml::to_string_pretty(&cfg)?)?;
     Ok(path)
 }

@@ -30,20 +30,36 @@ pub async fn run(client: &McpClient, cmd: InvoicesCmd, json: bool) -> Result<()>
     let value = match cmd {
         InvoicesCmd::List { status, limit } => {
             let mut args = Map::new();
-            if let Some(v) = status { args.insert("status".into(), Value::String(v)); }
-            if let Some(v) = limit { args.insert("limit".into(), Value::Number(v.into())); }
-            client.call_tool("list_invoices", Value::Object(args)).await?
+            if let Some(v) = status {
+                args.insert("status".into(), Value::String(v));
+            }
+            if let Some(v) = limit {
+                args.insert("limit".into(), Value::Number(v.into()));
+            }
+            client
+                .call_tool("list_invoices", Value::Object(args))
+                .await?
         }
         InvoicesCmd::Get { invoice_id } => {
-            client.call_tool("get_invoice", json!({ "invoiceId": invoice_id })).await?
+            client
+                .call_tool("get_invoice", json!({ "invoiceId": invoice_id }))
+                .await?
         }
         InvoicesCmd::Send { invoice_id } => {
-            client.call_tool("mark_invoice_sent", json!({ "invoiceId": invoice_id })).await?
+            client
+                .call_tool("mark_invoice_sent", json!({ "invoiceId": invoice_id }))
+                .await?
         }
         InvoicesCmd::Void { invoice_id } => {
-            client.call_tool("void_invoice", json!({ "invoiceId": invoice_id })).await?
+            client
+                .call_tool("void_invoice", json!({ "invoiceId": invoice_id }))
+                .await?
         }
         InvoicesCmd::Stats => client.call_tool("get_invoice_stats", json!({})).await?,
     };
-    if json { print_json(&value) } else { print_table(&value) }
+    if json {
+        print_json(&value)
+    } else {
+        print_table(&value)
+    }
 }

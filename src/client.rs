@@ -37,7 +37,12 @@ impl McpClient {
             .user_agent(concat!("favcrm-cli/", env!("CARGO_PKG_VERSION")))
             .build()
             .expect("reqwest client build");
-        Self { http, url, token, id: AtomicU64::new(1) }
+        Self {
+            http,
+            url,
+            token,
+            id: AtomicU64::new(1),
+        }
     }
 
     pub async fn call_tool(&self, name: &str, args: Value) -> Result<Value> {
@@ -85,7 +90,9 @@ impl McpClient {
         if let Some(err) = envelope.error {
             return Err(anyhow!("MCP error {}: {}", err.code, err.message));
         }
-        envelope.result.ok_or_else(|| anyhow!("MCP response missing result"))
+        envelope
+            .result
+            .ok_or_else(|| anyhow!("MCP response missing result"))
     }
 }
 
@@ -130,5 +137,9 @@ fn extract_data(result: Value) -> Result<Value> {
 }
 
 fn truncate(s: &str, n: usize) -> String {
-    if s.len() <= n { s.to_string() } else { format!("{}…", &s[..n]) }
+    if s.len() <= n {
+        s.to_string()
+    } else {
+        format!("{}…", &s[..n])
+    }
 }

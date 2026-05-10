@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: mailto:security@favcrm.io
+    about: Please report suspected vulnerabilities privately instead of opening a public issue.
+  - name: Account or production support
+    url: mailto:dev@favcrm.io
+    about: Use email for billing, account, and production support questions.
+

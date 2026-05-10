@@ -55,5 +55,9 @@ pub async fn dispatch(client: &McpClient, cmd: Command, json: bool) -> Result<()
 }
 
 fn render(_client: &McpClient, json: bool, value: serde_json::Value) -> Result<()> {
-    if json { print_json(&value) } else { print_table(&value) }
+    if json {
+        print_json(&value)
+    } else {
+        print_table(&value)
+    }
 }

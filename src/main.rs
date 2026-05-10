@@ -22,7 +22,12 @@ mod output;
 )]
 struct Cli {
     /// MCP endpoint base URL.
-    #[arg(long, env = "FAVCRM_MCP_URL", default_value = "https://api.favcrm.io/mcp", global = true)]
+    #[arg(
+        long,
+        env = "FAVCRM_MCP_URL",
+        default_value = "https://api.favcrm.io/mcp",
+        global = true
+    )]
     url: String,
 
     /// API key (fav_mcp_*). Falls back to config file or FAVCRM_API_KEY env.

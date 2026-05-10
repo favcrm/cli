@@ -36,27 +36,54 @@ pub enum BookingsCmd {
 
 pub async fn run(client: &McpClient, cmd: BookingsCmd, json: bool) -> Result<()> {
     let value = match cmd {
-        BookingsCmd::List { from, to, status, limit } => {
+        BookingsCmd::List {
+            from,
+            to,
+            status,
+            limit,
+        } => {
             let mut args = Map::new();
-            if let Some(v) = from { args.insert("from".into(), Value::String(v)); }
-            if let Some(v) = to { args.insert("to".into(), Value::String(v)); }
-            if let Some(v) = status { args.insert("status".into(), Value::String(v)); }
-            if let Some(v) = limit { args.insert("limit".into(), Value::Number(v.into())); }
-            client.call_tool("list_bookings", Value::Object(args)).await?
+            if let Some(v) = from {
+                args.insert("from".into(), Value::String(v));
+            }
+            if let Some(v) = to {
+                args.insert("to".into(), Value::String(v));
+            }
+            if let Some(v) = status {
+                args.insert("status".into(), Value::String(v));
+            }
+            if let Some(v) = limit {
+                args.insert("limit".into(), Value::Number(v.into()));
+            }
+            client
+                .call_tool("list_bookings", Value::Object(args))
+                .await?
         }
         BookingsCmd::Get { booking_id } => {
-            client.call_tool("get_booking_detail", json!({ "bookingId": booking_id })).await?
+            client
+                .call_tool("get_booking_detail", json!({ "bookingId": booking_id }))
+                .await?
         }
         BookingsCmd::Stats => client.call_tool("get_booking_stats", json!({})).await?,
         BookingsCmd::Cancel { booking_id } => {
-            client.call_tool("cancel_booking", json!({ "bookingId": booking_id })).await?
+            client
+                .call_tool("cancel_booking", json!({ "bookingId": booking_id }))
+                .await?
         }
         BookingsCmd::Complete { booking_id } => {
-            client.call_tool("complete_booking", json!({ "bookingId": booking_id })).await?
+            client
+                .call_tool("complete_booking", json!({ "bookingId": booking_id }))
+                .await?
         }
         BookingsCmd::Confirm { booking_id } => {
-            client.call_tool("confirm_booking", json!({ "bookingId": booking_id })).await?
+            client
+                .call_tool("confirm_booking", json!({ "bookingId": booking_id }))
+                .await?
         }
     };
-    if json { print_json(&value) } else { print_table(&value) }
+    if json {
+        print_json(&value)
+    } else {
+        print_table(&value)
+    }
 }

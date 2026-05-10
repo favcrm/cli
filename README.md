@@ -78,6 +78,10 @@ Default: human-friendly tables. Use `--json` for machine-parseable JSON (pipes w
 
 Thin Rust client over the existing FavCRM MCP server. No business logic in the CLI — all gating (per-tool scope, per-merchant module access, rate limits) is enforced server-side. Token = same `fav_mcp_*` key your agents use.
 
+## Contributing
+
+Issues and PRs are welcome. See [`CONTRIBUTING.md`](./CONTRIBUTING.md) before opening a PR. Please report suspected vulnerabilities privately using [`SECURITY.md`](./SECURITY.md), not public issues.
+
 ## License
 
 MIT

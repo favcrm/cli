@@ -33,11 +33,15 @@ pub async fn run(client: &McpClient, a: Args, json: bool) -> Result<()> {
     match a.verb.as_str() {
         "list" => list(client, json).await,
         "describe" => {
-            let name = a.name.ok_or_else(|| anyhow!("`favcrm tool describe <name>` — name is required"))?;
+            let name = a
+                .name
+                .ok_or_else(|| anyhow!("`favcrm tool describe <name>` — name is required"))?;
             describe(client, &name, json).await
         }
         "call" => {
-            let name = a.name.ok_or_else(|| anyhow!("`favcrm tool call <name> [json]` — name is required"))?;
+            let name = a
+                .name
+                .ok_or_else(|| anyhow!("`favcrm tool call <name> [json]` — name is required"))?;
             call(client, &name, &a.args, json).await
         }
         other => {
@@ -45,7 +49,11 @@ pub async fn run(client: &McpClient, a: Args, json: bool) -> Result<()> {
             // `name` (if Some) is actually the JSON args. Backward compatible
             // with v0.1.0–0.1.2 ergonomics.
             let payload = a.name.unwrap_or_else(|| a.args.clone());
-            let payload = if payload.is_empty() { "{}".to_string() } else { payload };
+            let payload = if payload.is_empty() {
+                "{}".to_string()
+            } else {
+                payload
+            };
             call(client, other, &payload, json).await
         }
     }
@@ -56,7 +64,9 @@ async fn list(client: &McpClient, json: bool) -> Result<()> {
     if json {
         return print_json(&tools);
     }
-    let items = tools.as_array().ok_or_else(|| anyhow!("tools/list returned non-array"))?;
+    let items = tools
+        .as_array()
+        .ok_or_else(|| anyhow!("tools/list returned non-array"))?;
     println!("{} tool(s) available:\n", items.len());
     for t in items {
         let name = t.get("name").and_then(|v| v.as_str()).unwrap_or("?");
@@ -70,7 +80,9 @@ async fn list(client: &McpClient, json: bool) -> Result<()> {
 
 async fn describe(client: &McpClient, name: &str, json: bool) -> Result<()> {
     let tools = client.list_tools().await?;
-    let items = tools.as_array().ok_or_else(|| anyhow!("tools/list returned non-array"))?;
+    let items = tools
+        .as_array()
+        .ok_or_else(|| anyhow!("tools/list returned non-array"))?;
     let found = items
         .iter()
         .find(|t| t.get("name").and_then(|v| v.as_str()) == Some(name))
@@ -79,7 +91,10 @@ async fn describe(client: &McpClient, name: &str, json: bool) -> Result<()> {
     if json {
         return print_json(found);
     }
-    let desc = found.get("description").and_then(|v| v.as_str()).unwrap_or("");
+    let desc = found
+        .get("description")
+        .and_then(|v| v.as_str())
+        .unwrap_or("");
     println!("# {}\n\n{}\n", name, desc);
     if let Some(schema) = found.get("inputSchema") {
         println!("## Input schema\n");
@@ -92,7 +107,11 @@ async fn call(client: &McpClient, name: &str, raw_args: &str, json: bool) -> Res
     let parsed: Value = serde_json::from_str(raw_args)
         .with_context(|| format!("invalid JSON for tool args: {}", raw_args))?;
     let result = client.call_tool(name, parsed).await?;
-    if json { print_json(&result) } else { print_table(&result) }
+    if json {
+        print_json(&result)
+    } else {
+        print_table(&result)
+    }
 }
 
 fn first_line(s: &str, max: usize) -> String {
