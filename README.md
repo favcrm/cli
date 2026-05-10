@@ -51,6 +51,11 @@ favcrm bookings cancel <booking-id>
 favcrm invoices list --status overdue
 favcrm invoices send <invoice-id>
 
+favcrm plan status
+favcrm plan check --tool create_account
+favcrm plan options
+favcrm plan upgrade --plan-code favcrm-lite --confirm
+
 favcrm dashboard                             # headline stats
 
 favcrm --json bookings list                  # raw JSON for jq
@@ -76,7 +81,7 @@ Default: human-friendly tables. Use `--json` for machine-parseable JSON (pipes w
 
 ## How it works
 
-Thin Rust client over the existing FavCRM MCP server. No business logic in the CLI — all gating (per-tool scope, per-merchant module access, rate limits) is enforced server-side. Token = same `fav_mcp_*` key your agents use.
+Thin Rust client over the existing FavCRM MCP server. No business logic in the CLI — all gating (per-tool scope, per-merchant module access, plan quotas, billing links, rate limits) is enforced server-side. Token = same `fav_mcp_*` key your agents use.
 
 ## Contributing
 
