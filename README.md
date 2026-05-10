@@ -41,6 +41,8 @@ favcrm orgs switch <company-id>
 favcrm members search alice --limit 5
 favcrm members search --inactive-days 90
 favcrm members get <account-id>
+favcrm members create "Ada Lovelace" --email ada@example.com --phone +15550001001
+favcrm members create "Ada Member" --enroll-membership --tier-id <tier-id>
 
 favcrm bookings list --status confirmed --limit 10
 favcrm bookings stats
@@ -56,11 +58,12 @@ favcrm --json bookings list                  # raw JSON for jq
 
 ## Escape hatch
 
-Any of the 154 registered MCP tools can be called directly:
+Any of the 156 registered MCP tools can be called directly:
 
 ```bash
 favcrm tool list_campaigns '{"limit":5}'
 favcrm tool generate_image '{"prompt":"sunset","model":"gemini-2.5-flash-image"}'
+favcrm tool report_agent_issue '{"title":"Missing MCP path","severity":"high","area":"mcp_tool_missing","expectedBehavior":"...","actualBehavior":"...","stepsTried":["..."],"aiAnalysis":"..."}'
 ```
 
 See the full catalog at `https://api.favcrm.io/mcp` (JSON-RPC `tools/list`).
