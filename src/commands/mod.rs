@@ -12,6 +12,7 @@ mod invoices;
 mod login;
 mod members;
 mod orgs;
+mod plan;
 mod tool;
 mod whoami;
 
@@ -35,6 +36,9 @@ pub enum Command {
     /// Invoices.
     #[command(subcommand)]
     Invoices(invoices::InvoicesCmd),
+    /// Plan, quota, and billing operations.
+    #[command(subcommand)]
+    Plan(plan::PlanCmd),
     /// Universal verb for any registered MCP tool. Subcommands:
     /// `list` (catalog), `describe <name>` (input schema), `call <name> [json]`,
     /// or shortcut `<name> [json]`.
@@ -50,6 +54,7 @@ pub async fn dispatch(client: &McpClient, cmd: Command, json: bool) -> Result<()
         Command::Members(c) => members::run(client, c, json).await,
         Command::Bookings(c) => bookings::run(client, c, json).await,
         Command::Invoices(c) => invoices::run(client, c, json).await,
+        Command::Plan(c) => plan::run(client, c, json).await,
         Command::Tool(a) => tool::run(client, a, json).await,
     }
 }
