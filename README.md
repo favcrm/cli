@@ -55,6 +55,7 @@ favcrm plan status
 favcrm plan check --tool create_account
 favcrm plan options
 favcrm plan upgrade --plan-code favcrm-lite --confirm
+favcrm plan portal --confirm
 
 favcrm dashboard                             # headline stats
 

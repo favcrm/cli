@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use clap::Subcommand;
 use serde_json::{json, Map, Value};
 
@@ -96,10 +96,12 @@ pub async fn run(client: &McpClient, cmd: PlanCmd, json_out: bool) -> Result<()>
             return_url,
             confirm,
         } => {
+            let status = client.call_tool("get_plan_status", json!({})).await?;
+            let plan_code = current_plan_code(&status)?;
             client
                 .call_tool(
                     "create_plan_upgrade_link",
-                    Value::Object(portal_args(return_url, confirm)),
+                    Value::Object(portal_args(plan_code, return_url, confirm)),
                 )
                 .await?
         }
@@ -148,9 +150,22 @@ fn upgrade_args(
     args
 }
 
-fn portal_args(return_url: Option<String>, confirm: bool) -> Map<String, Value> {
+fn current_plan_code(status: &Value) -> Result<String> {
+    status
+        .get("plan")
+        .and_then(|plan| plan.get("code"))
+        .and_then(Value::as_str)
+        .map(str::to_owned)
+        .ok_or_else(|| {
+            anyhow!(
+                "current plan code not found; run `favcrm plan options` and use `favcrm plan upgrade --plan-code <code> --confirm`"
+            )
+        })
+}
+
+fn portal_args(plan_code: String, return_url: Option<String>, confirm: bool) -> Map<String, Value> {
     let mut args = Map::new();
-    args.insert("planCode".into(), Value::String("favcrm-lite".into()));
+    args.insert("planCode".into(), Value::String(plan_code));
     insert_optional(&mut args, "returnUrl", return_url);
     args.insert("confirm".into(), Value::Bool(confirm));
     args
