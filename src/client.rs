@@ -13,7 +13,7 @@ use std::sync::atomic::{AtomicU64, Ordering};
 pub struct McpClient {
     http: reqwest::Client,
     url: String,
-    token: String,
+    token: Option<String>,
     id: AtomicU64,
 }
 
@@ -33,6 +33,14 @@ struct RpcError {
 
 impl McpClient {
     pub fn new(url: String, token: String) -> Self {
+        Self::new_with_token(url, Some(token))
+    }
+
+    pub fn unauthenticated(url: String) -> Self {
+        Self::new_with_token(url, None)
+    }
+
+    fn new_with_token(url: String, token: Option<String>) -> Self {
         let http = reqwest::Client::builder()
             .user_agent(concat!("favcrm-cli/", env!("CARGO_PKG_VERSION")))
             .build()
@@ -70,13 +78,18 @@ impl McpClient {
         let res = self
             .http
             .post(&self.url)
-            .header(AUTHORIZATION, format!("Bearer {}", self.token))
             .header(CONTENT_TYPE, "application/json")
             .header(ACCEPT, "application/json, text/event-stream")
-            .json(&body)
-            .send()
-            .await
-            .with_context(|| format!("POST {}", self.url))?;
+            .json(&body);
+
+        let res = if let Some(token) = &self.token {
+            res.header(AUTHORIZATION, format!("Bearer {}", token))
+        } else {
+            res
+        }
+        .send()
+        .await
+        .with_context(|| format!("POST {}", self.url))?;
 
         let status = res.status();
         let text = res.text().await?;

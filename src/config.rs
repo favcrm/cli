@@ -26,6 +26,19 @@ pub struct Resolved {
     pub url: String,
 }
 
+pub fn resolve_url(cli_url: &str) -> String {
+    let file = load_file().unwrap_or_default();
+    if cli_url != DEFAULT_URL {
+        cli_url.to_string()
+    } else if let Ok(u) = env::var("FAVCRM_MCP_URL") {
+        u
+    } else if let Ok(base) = env::var("FAVCRM_API_BASE") {
+        format!("{}/mcp", base.trim_end_matches('/'))
+    } else {
+        file.url.unwrap_or_else(|| DEFAULT_URL.to_string())
+    }
+}
+
 pub fn config_path() -> Result<PathBuf> {
     let dirs = ProjectDirs::from("io", "FavCRM", "favcrm")
         .ok_or_else(|| anyhow!("could not resolve config directory"))?;
@@ -63,17 +76,7 @@ pub fn resolve(cli_key: &Option<String>, cli_url: &str) -> Result<Resolved> {
         .or(file.api_key)
         .ok_or_else(|| anyhow!("no API key. Set FAVCRM_API_KEY (or FAVCRM_MCP_TOKEN inside a runtime) or run `favcrm login <KEY>`"))?;
 
-    // CLI flag wins outright. Otherwise fall back to merchant-runtime envs,
-    // saved config, then the prod default.
-    let url = if cli_url != DEFAULT_URL {
-        cli_url.to_string()
-    } else if let Ok(u) = env::var("FAVCRM_MCP_URL") {
-        u
-    } else if let Ok(base) = env::var("FAVCRM_API_BASE") {
-        format!("{}/mcp", base.trim_end_matches('/'))
-    } else {
-        file.url.unwrap_or_else(|| DEFAULT_URL.to_string())
-    };
+    let url = resolve_url(cli_url);
 
     Ok(Resolved { api_key, url })
 }

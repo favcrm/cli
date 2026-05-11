@@ -50,7 +50,19 @@ async fn main() -> Result<()> {
     metadata::populate_env().await;
 
     let cli = Cli::parse();
-    let cfg = config::resolve(&cli.api_key, &cli.url)?;
-    let client = client::McpClient::new(cfg.url.clone(), cfg.api_key.clone());
-    commands::dispatch(&client, cli.cmd, cli.json).await
+    let url = config::resolve_url(&cli.url);
+
+    let (client, authenticated) = if commands::requires_auth(&cli.cmd) {
+        let cfg = config::resolve(&cli.api_key, &cli.url)?;
+        (client::McpClient::new(cfg.url, cfg.api_key), true)
+    } else if commands::prefers_optional_auth(&cli.cmd) {
+        match config::resolve(&cli.api_key, &cli.url) {
+            Ok(cfg) => (client::McpClient::new(cfg.url, cfg.api_key), true),
+            Err(_) => (client::McpClient::unauthenticated(url.clone()), false),
+        }
+    } else {
+        (client::McpClient::unauthenticated(url.clone()), false)
+    };
+
+    commands::dispatch(&client, cli.cmd, cli.json, &url, authenticated).await
 }
