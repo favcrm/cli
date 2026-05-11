@@ -31,6 +31,13 @@ favcrm login fav_mcp_...                     # writes ~/.config/favcrm/config.to
 
 Get a key at `Settings → MCP Keys` in the merchant portal.
 
+You can also register without a key:
+
+```bash
+favcrm signup request --email owner@example.com --organisation-name "Ada Studio"
+favcrm signup verify --request-id <request-id> --code <code>
+```
+
 ## Quick start
 
 ```bash
@@ -57,6 +64,15 @@ favcrm plan options
 favcrm plan upgrade --plan-code favcrm-lite --confirm
 favcrm plan portal --confirm
 
+favcrm team invite create --email teammate@example.com --role staff
+favcrm team invite accept-request --token <invite-token>
+favcrm team invite accept-verify --token <invite-token> --code <code>
+
+favcrm whatsapp status
+favcrm whatsapp connect --mode cloud-api
+
+favcrm doctor                                # endpoint, auth, plan, channel checks
+
 favcrm dashboard                             # headline stats
 
 favcrm --json bookings list                  # raw JSON for jq
@@ -64,7 +80,7 @@ favcrm --json bookings list                  # raw JSON for jq
 
 ## Escape hatch
 
-Any of the 156 registered MCP tools can be called directly:
+Any of the 165 registered MCP tools can be called directly:
 
 ```bash
 favcrm tool list_campaigns '{"limit":5}'
