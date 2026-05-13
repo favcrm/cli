@@ -83,6 +83,8 @@ favcrm --json bookings list                  # raw JSON for jq
 Any of the 165 registered MCP tools can be called directly:
 
 ```bash
+favcrm tool query_favcrm_platform '{"query":"create a booking"}'
+favcrm tool query_company_knowledge '{"query":"refund policy"}'
 favcrm tool list_campaigns '{"limit":5}'
 favcrm tool generate_image '{"prompt":"sunset","model":"gemini-2.5-flash-image"}'
 favcrm tool report_agent_issue '{"title":"Missing MCP path","severity":"high","area":"mcp_tool_missing","expectedBehavior":"...","actualBehavior":"...","stepsTried":["..."],"aiAnalysis":"..."}'
