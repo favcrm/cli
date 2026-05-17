@@ -17,7 +17,7 @@ cargo install --path .
 ```bash
 brew install favcrm/tap/favcrm         # Homebrew (macOS / Linux)
 curl -fsSL favcrm.io/install.sh | sh   # curl
-npm install -g favcrm                  # npm
+npm install -g @favcrm/cli             # npm
 ```
 
 The curl script honours `FAVCRM_VERSION` and `FAVCRM_INSTALL_DIR` overrides.

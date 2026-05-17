@@ -1,5 +1,5 @@
 {
-  "name": "favcrm",
+  "name": "@favcrm/cli",
   "version": "0.1.3",
   "description": "FavCRM CLI — talk to FavCRM from your terminal via the MCP API.",
   "homepage": "https://favcrm.io",
