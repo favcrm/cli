@@ -78,8 +78,9 @@ jobs:
           cp README.md "dist/$name/" 2>/dev/null || true
           cp LICENSE "dist/$name/" 2>/dev/null || true
           if [[ "$TARGET" == *windows* ]]; then
+            # Windows Git Bash ships sha256sum but not shasum.
             (cd dist && 7z a "$name.zip" "$name")
-            (cd dist && shasum -a 256 "$name.zip" > "$name.zip.sha256")
+            (cd dist && sha256sum "$name.zip" > "$name.zip.sha256")
           else
             (cd dist && tar -czf "$name.tar.gz" "$name")
             (cd dist && shasum -a 256 "$name.tar.gz" > "$name.tar.gz.sha256")
