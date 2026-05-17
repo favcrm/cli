@@ -39,3 +39,10 @@ For live smoke testing, use a non-production workspace when possible:
 FAVCRM_API_KEY=fav_mcp_... ./smoke.sh
 ```
 
+## Releasing
+
+Pushing a `vX.Y.Z` tag triggers `.github/workflows/release.yml`, which builds
+the binaries, publishes the GitHub Release, updates the Homebrew tap, and
+publishes the npm packages. The tag version **must** match `version` in
+`Cargo.toml` — the npm packages take their version from the tag.
+
