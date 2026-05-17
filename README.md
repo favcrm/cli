@@ -12,12 +12,15 @@ cd ~/Project/favcrm/cli
 cargo install --path .
 ```
 
-### Pre-built (planned)
+### Pre-built
 
 ```bash
-brew install favcrm/tap/favcrm        # planned
-curl -fsSL favcrm.io/install.sh | sh   # planned
+brew install favcrm/tap/favcrm         # Homebrew (macOS / Linux)
+curl -fsSL favcrm.io/install.sh | sh   # curl
+npm install -g @favcrm/cli             # npm
 ```
+
+The curl script honours `FAVCRM_VERSION` and `FAVCRM_INSTALL_DIR` overrides.
 
 ## Auth
 

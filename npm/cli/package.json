@@ -1,0 +1,29 @@
+{
+  "name": "@favcrm/cli",
+  "version": "0.1.3",
+  "description": "FavCRM CLI — talk to FavCRM from your terminal via the MCP API.",
+  "homepage": "https://favcrm.io",
+  "repository": "github:favcrm/cli",
+  "license": "MIT",
+  "keywords": ["favcrm", "crm", "cli", "mcp"],
+  "bin": {
+    "favcrm": "bin/favcrm.js"
+  },
+  "files": [
+    "bin/favcrm.js",
+    "install-check.js"
+  ],
+  "scripts": {
+    "postinstall": "node install-check.js"
+  },
+  "optionalDependencies": {
+    "@favcrm/cli-darwin-arm64": "0.1.3",
+    "@favcrm/cli-darwin-x64": "0.1.3",
+    "@favcrm/cli-linux-arm64": "0.1.3",
+    "@favcrm/cli-linux-x64": "0.1.3",
+    "@favcrm/cli-win32-x64": "0.1.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

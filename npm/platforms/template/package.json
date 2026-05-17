@@ -1,0 +1,13 @@
+{
+  "name": "__NAME__",
+  "version": "__VERSION__",
+  "description": "FavCRM CLI prebuilt binary for __NAME__.",
+  "homepage": "https://favcrm.io",
+  "repository": "github:favcrm/cli",
+  "license": "MIT",
+  "os": ["__OS__"],
+  "cpu": ["__CPU__"],
+  "files": [
+    "bin/"
+  ]
+}

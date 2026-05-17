@@ -32,6 +32,14 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: verify tag matches Cargo.toml
+        run: |
+          cargo_version=$(grep -m1 '^version' Cargo.toml | sed -E 's/.*"([^"]+)".*/\1/')
+          if [ "$cargo_version" != "${TAG#v}" ]; then
+            echo "tag $TAG does not match Cargo.toml version $cargo_version" >&2
+            exit 1
+          fi
+
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy, rustfmt
@@ -71,8 +79,10 @@ jobs:
           cp LICENSE "dist/$name/" 2>/dev/null || true
           if [[ "$TARGET" == *windows* ]]; then
             (cd dist && 7z a "$name.zip" "$name")
+            (cd dist && shasum -a 256 "$name.zip" > "$name.zip.sha256")
           else
             (cd dist && tar -czf "$name.tar.gz" "$name")
+            (cd dist && shasum -a 256 "$name.tar.gz" > "$name.tar.gz.sha256")
           fi
 
       - uses: softprops/action-gh-release@v3
@@ -80,3 +90,84 @@ jobs:
           files: |
             dist/*.tar.gz
             dist/*.zip
+            dist/*.sha256
+
+  homebrew:
+    name: update homebrew tap
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: download checksums
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p sha
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" \
+            --pattern '*-apple-darwin.tar.gz.sha256' \
+            --pattern '*-unknown-linux-gnu.tar.gz.sha256' \
+            --dir sha
+
+      - name: render formula
+        run: |
+          chmod +x packaging/homebrew/render.sh
+          mkdir -p out
+          packaging/homebrew/render.sh "$TAG" sha > out/favcrm.rb
+          cat out/favcrm.rb
+
+      - name: push to tap
+        env:
+          TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          git clone "https://x-access-token:${TAP_TOKEN}@github.com/favcrm/homebrew-tap.git" tap
+          mkdir -p tap/Formula
+          cp out/favcrm.rb tap/Formula/favcrm.rb
+          cd tap
+          git config user.name "favcrm-bot"
+          git config user.email "info@favcrm.io"
+          git add Formula/favcrm.rb
+          if git diff --cached --quiet; then
+            echo "formula unchanged"
+            exit 0
+          fi
+          git commit -m "favcrm ${TAG#v}"
+          git push
+
+  npm:
+    name: publish to npm
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org
+
+      - name: download release archives
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p archives
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" \
+            --pattern '*.tar.gz' --pattern '*.zip' --dir archives
+
+      - name: build packages
+        run: |
+          chmod +x npm/build.sh
+          npm/build.sh "$TAG" archives npm-dist
+
+      - name: publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          for d in npm-dist/cli-*; do
+            (cd "$d" && npm publish --access public)
+          done
+          (cd npm-dist/cli && npm publish --access public)
