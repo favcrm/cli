@@ -5,13 +5,10 @@ class Favcrm < Formula
   license "MIT"
 
   on_macos do
+    # Apple Silicon only — Intel Macs are not supported.
     on_arm do
       url "__URL_DARWIN_ARM__"
       sha256 "__SHA_DARWIN_ARM__"
-    end
-    on_intel do
-      url "__URL_DARWIN_X64__"
-      sha256 "__SHA_DARWIN_X64__"
     end
   end
 

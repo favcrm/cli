@@ -9,7 +9,6 @@ const { execFileSync } = require("node:child_process");
 
 const PLATFORM_PACKAGES = {
   "darwin arm64": "@favcrm/cli-darwin-arm64",
-  "darwin x64": "@favcrm/cli-darwin-x64",
   "linux arm64": "@favcrm/cli-linux-arm64",
   "linux x64": "@favcrm/cli-linux-x64",
   "win32 x64": "@favcrm/cli-win32-x64",

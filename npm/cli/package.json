@@ -18,7 +18,6 @@
   },
   "optionalDependencies": {
     "@favcrm/cli-darwin-arm64": "0.1.3",
-    "@favcrm/cli-darwin-x64": "0.1.3",
     "@favcrm/cli-linux-arm64": "0.1.3",
     "@favcrm/cli-linux-x64": "0.1.3",
     "@favcrm/cli-win32-x64": "0.1.3"
