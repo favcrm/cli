@@ -36,6 +36,10 @@ esac
 
 target="${arch_part}-${os_part}"
 
+if [ "$target" = "x86_64-apple-darwin" ]; then
+  err "Intel Macs are not supported — favcrm ships Apple Silicon (arm64) binaries only."
+fi
+
 # --- pick a downloader ------------------------------------------------------
 if command -v curl >/dev/null 2>&1; then
   dl() { curl -fsSL "$1" -o "$2"; }

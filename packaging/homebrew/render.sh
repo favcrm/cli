@@ -33,8 +33,6 @@ sed \
   -e "s|__VERSION__|$version|g" \
   -e "s|__URL_DARWIN_ARM__|$(url_for aarch64-apple-darwin)|g" \
   -e "s|__SHA_DARWIN_ARM__|$(sha_for aarch64-apple-darwin)|g" \
-  -e "s|__URL_DARWIN_X64__|$(url_for x86_64-apple-darwin)|g" \
-  -e "s|__SHA_DARWIN_X64__|$(sha_for x86_64-apple-darwin)|g" \
   -e "s|__URL_LINUX_ARM__|$(url_for aarch64-unknown-linux-gnu)|g" \
   -e "s|__SHA_LINUX_ARM__|$(sha_for aarch64-unknown-linux-gnu)|g" \
   -e "s|__URL_LINUX_X64__|$(url_for x86_64-unknown-linux-gnu)|g" \

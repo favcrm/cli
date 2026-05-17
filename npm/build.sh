@@ -22,7 +22,6 @@ mkdir -p "$out_dir"
 # rust target -> "npm-name-suffix os cpu exe"
 targets=(
   "aarch64-apple-darwin|darwin-arm64|darwin|arm64|favcrm"
-  "x86_64-apple-darwin|darwin-x64|darwin|x64|favcrm"
   "aarch64-unknown-linux-gnu|linux-arm64|linux|arm64|favcrm"
   "x86_64-unknown-linux-gnu|linux-x64|linux|x64|favcrm"
   "x86_64-pc-windows-msvc|win32-x64|win32|x64|favcrm.exe"
