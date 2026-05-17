@@ -52,10 +52,24 @@ for row in "${targets[@]}"; do
     -e "s|__OS__|$os|g" \
     -e "s|__CPU__|$cpu|g" \
     "$here/platforms/template/package.json" >"$pkg_dir/package.json"
+
+  # stub README so npm does not warn; users never install these directly
+  cat >"$pkg_dir/README.md" <<EOF
+# @favcrm/cli-$suffix
+
+Prebuilt FavCRM CLI binary for \`$os/$cpu\`. This is an internal platform
+dependency of [\`@favcrm/cli\`](https://www.npmjs.com/package/@favcrm/cli) —
+install that instead:
+
+\`\`\`
+npm install -g @favcrm/cli
+\`\`\`
+EOF
 done
 
-# the main launcher package
+# the main launcher package — carries the repo README so npm renders it
 cp -r "$here/cli" "$out_dir/cli"
+cp "$here/../README.md" "$out_dir/cli/README.md"
 node -e '
   const fs = require("fs");
   const p = process.argv[1];
