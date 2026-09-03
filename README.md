@@ -83,15 +83,21 @@ favcrm --json bookings list                  # raw JSON for jq
 
 ## Escape hatch
 
-Any of the 165 registered MCP tools can be called directly:
+Any registered MCP tool can be called directly. Describe a tool first when you need its current input schema:
 
 ```bash
+favcrm tool describe create_campaign
 favcrm tool query_favcrm_platform '{"query":"create a booking"}'
 favcrm tool query_company_knowledge '{"query":"refund policy"}'
 favcrm tool list_campaigns '{"limit":5}'
+favcrm tool create_campaign '{"name":"September offer","channel":"email","recipientSource":"all","audienceExclusions":{"accountIds":["ACCOUNT_ID"],"campaignIds":["PREVIOUS_CAMPAIGN_ID"]},"channelConfig":{"subject":"September offer","htmlBody":"<p>Offer details</p>"}}'
+favcrm tool get_campaign '{"campaignId":"CAMPAIGN_ID"}'
+favcrm tool validate_campaign '{"campaignId":"CAMPAIGN_ID"}'
 favcrm tool generate_image '{"prompt":"sunset","model":"gemini-2.5-flash-image"}'
 favcrm tool report_agent_issue '{"title":"Missing MCP path","severity":"high","area":"mcp_tool_missing","expectedBehavior":"...","actualBehavior":"...","stepsTried":["..."],"aiAnalysis":"..."}'
 ```
+
+For campaign exclusions, `accountIds` are FavCRM customer account IDs (not email addresses or phone numbers), while `campaignIds` identify previous campaigns whose accepted recipients should be omitted. A match in either list excludes the recipient. Use `search_members` and `list_campaigns` to resolve the IDs, then read back and validate the saved campaign before requesting send approval.
 
 See the full catalog at `https://api.favcrm.io/mcp` (JSON-RPC `tools/list`).
 
